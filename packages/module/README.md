@@ -29,7 +29,7 @@ We highly recommend installing [`nuxt-crud-cli`](https://www.npmjs.com/package/n
 ```bash
 npm install -g nuxt-crud-cli
 ```
-
+Checkout the CLI documentation [here](https://github.com/dennisadriaans/nuxt-crud/blob/main/packages/cli/README.md)
 ## Basic Usage
 
 After installation, Nuxt CRUD will automatically detect your Drizzle models and generate admin interfaces. Simply define your schema:
