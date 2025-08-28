@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  extends: ["docus"],
   llms: {
     domain: "https://nuxtcrud.com/docs",
   },
