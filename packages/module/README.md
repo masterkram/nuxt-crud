@@ -1,31 +1,15 @@
-<!--
-Get your module up and running quickly.
-
-Find and replace all on all files (CMD+SHIFT+F):
-- Name: My Module
-- Package name: nuxt-crud
-- Description: My new Nuxt module
--->
-
-# My Module
+# Nuxt CRUD
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
-[![Nuxt][nuxt-src]][nuxt-href]
 
-My new Nuxt module for doing amazing things.
-
-- [✨ &nbsp;Release Notes](/CHANGELOG.md)
-<!-- - [🏀 Online playground](https://stackblitz.com/github/your-org/nuxt-crud?file=playground%2Fapp.vue) -->
-<!-- - [📖 &nbsp;Documentation](https://example.com) -->
+Nuxt CRUD automatically generates a complete GUI for your Drizzle ORM models with built-in Zod field validation, making database management effortless.
 
 ## Features
 
-<!-- Highlight some of the features your module provide here -->
-- ⛰ &nbsp;Foo
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
+- 🚀 **Automatic GUI Generation** - Create, read, update, and delete interfaces generated from your Drizzle schemas
+- 🔧 **Type-Safe** - Full TypeScript support with automatic type inference
 
 ## Quick Setup
 
@@ -35,40 +19,57 @@ Install the module to your Nuxt application with one command:
 npx nuxi module add nuxt-crud
 ```
 
-That's it! You can now use My Module in your Nuxt app ✨
+## Recommended Setup
 
+We highly recommend installing [`nuxt-crud-cli`](https://www.npmjs.com/package/nuxt-crud-cli) alongside this module. The CLI tool allows you to:
 
-## Contribution
+- Bootstrap your database schema 
+- Generate CRUD endpoints
 
-<details>
-  <summary>Local development</summary>
-  
-  ```bash
-  # Install dependencies
-  npm install
-  
-  # Generate type stubs
-  npm run dev:prepare
-  
-  # Develop with the playground
-  npm run dev
-  
-  # Build the playground
-  npm run dev:build
-  
-  # Run ESLint
-  npm run lint
-  
-  # Run Vitest
-  npm run test
-  npm run test:watch
-  
-  # Release new version
-  npm run release
-  ```
+```bash
+npm install -g nuxt-crud-cli
+```
 
-</details>
+## Basic Usage
 
+After installation, Nuxt CRUD will automatically detect your Drizzle models and generate admin interfaces. Simply define your schema:
+
+```typescript
+// schemas/user.ts
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name'),
+  email: text('email'),
+  createdAt: text('created_at')
+    .notNull(),
+  updatedAt: text('updated_at')
+    .notNull(),
+})
+
+export type User = typeof users.$inferSelect
+export type NewUser = typeof users.$inferInsert
+
+```
+
+Navigate to `/admin` in your application to access the generated CRUD interface.
+
+## Documentation
+
+For detailed configuration options, advanced usage, and customization guides, visit our [documentation](https://nuxt-crud.dev).
+
+## Contributing
+
+Contributions are welcome! Please read our [contributing guidelines](CONTRIBUTING.md) before submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+That's it! You can now use Nuxt CRUD in your Nuxt app to manage your database with a beautiful, type-safe admin interface ✨
 
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/nuxt-crud/latest.svg?style=flat&colorA=020420&colorB=00DC82
