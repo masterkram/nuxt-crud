@@ -36,5 +36,5 @@ jobs:
       - name: Build & Deploy to NuxtHub
         uses: nuxt-hub/action@v2
         with:
-          project-key: nuxt-crud-qsq2
+          project-key: nuxt-crud-6ebs
           directory: packages/docs
