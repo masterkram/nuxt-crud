@@ -1,26 +1,22 @@
 ---
 seo:
-  title: Write beautiful docs with Markdown
-  description: Ship fast, flexible, and SEO-optimized documentation with beautiful
-    design out of the box. Docus brings together the best of the Nuxt ecosystem.
-    Powered by Nuxt UI Pro.
+  title: Nuxt CRUD Documentation
+  description: Automatically generate a complete GUI for your Drizzle ORM models with built-in Zod field validation, making database management effortless.
 ---
 
 ::u-page-hero
 #title
-Write beautiful docs with Markdown
+Nuxt CRUD
 
 #description
-Ship fast, flexible, and SEO-optimized documentation with beautiful design out of the box.
-
-Docus brings the best of the Nuxt ecosystem into one CLI.
+Automatically generate a complete GUI for your Drizzle ORM models with built-in Zod field validation, making database management effortless.
 
 #links
   :::u-button
   ---
   color: neutral
   size: xl
-  to: /getting-started/installation
+  to: /getting-started/introduction
   trailing-icon: i-lucide-arrow-right
   ---
   Get started
