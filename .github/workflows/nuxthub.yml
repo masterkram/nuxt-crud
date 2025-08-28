@@ -1,5 +1,9 @@
 name: Deploy to NuxtHub
-on: push
+on:
+  push:
+    paths:
+      - 'packages/docs/**'
+      - '.github/workflows/nuxthub.yml'
 
 jobs:
   deploy:
