@@ -27,7 +27,7 @@ Automatically generate a complete GUI for your Drizzle ORM models with built-in 
   color: neutral
   icon: simple-icons-github
   size: xl
-  to: https://github.com/nuxt-ui-pro/docus
+  to: https://github.com/dennisadriaans/nuxt-crud
   variant: outline
   ---
   Star on GitHub
