@@ -1,6 +1,6 @@
 import { useAppConfig } from '#imports'
 import { tables } from '~~/server/database'
-import { CrudConfig } from '../../types/crud'
+import type { CrudConfig } from '../../types/crud'
 
 export const useCrud = () => {
   const config = useAppConfig() as { crud?: CrudConfig }

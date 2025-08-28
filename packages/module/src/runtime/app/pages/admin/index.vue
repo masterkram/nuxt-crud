@@ -55,7 +55,6 @@ const customersData = ref<CustomersData[]>([
   { month: 5, customers: 1798 },
   { month: 6, customers: 1923 },
   { month: 7, customers: 2087 },
-  { month: 2234 },
   { month: 9, customers: 2345 },
   { month: 10, customers: 2456 },
   { month: 11, customers: 2567 },
@@ -75,7 +74,6 @@ const customersCategories: Record<string, BulletLegendItemInterface> = {
   customers: { name: 'Total Customers', color: '#8b5cf6' },
 }
 
-// Formatters
 const formatCurrency = (value: number) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -95,37 +93,9 @@ const formatMonth = (i: number, data: RevenueData[] | OrdersData[] | CustomersDa
   })
 }
 
-// Calculate stats
-const totalRevenue = computed(() =>
-  revenueData.value.reduce((sum, item) => sum + item.revenue, 0),
-)
-
-const totalOrders = computed(() =>
-  ordersData.value.reduce((sum, item) => sum + item.orders, 0),
-)
-
 const totalCustomers = computed(() =>
   customersData.value[customersData.value.length - 1]?.customers || 0,
 )
-
-const newCustomersThisMonth = computed(() => {
-  const currentMonth = customersData.value[customersData.value.length - 1]?.customers || 0
-  const previousMonth = customersData.value[customersData.value.length - 2]?.customers || 0
-  return currentMonth - previousMonth
-})
-
-// Growth calculations
-const revenueGrowth = computed(() => {
-  const current = revenueData.value[revenueData.value.length - 1]?.revenue || 0
-  const previous = revenueData.value[revenueData.value.length - 2]?.revenue || 0
-  return previous > 0 ? ((current - previous) / previous * 100) : 0
-})
-
-const ordersGrowth = computed(() => {
-  const current = ordersData.value[ordersData.value.length - 1]?.orders || 0
-  const previous = ordersData.value[ordersData.value.length - 2]?.orders || 0
-  return previous > 0 ? ((current - previous) / previous * 100) : 0
-})
 
 const customersGrowth = computed(() => {
   const current = totalCustomers.value
@@ -136,7 +106,6 @@ const customersGrowth = computed(() => {
 
 <template>
   <div class="space-y-8">
-    <!-- Page Header -->
     <div>
       <h1 class="text-2xl font-semibold text-(--ui-text)">
         Dashboard
@@ -146,168 +115,7 @@ const customersGrowth = computed(() => {
       </p>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Total Revenue -->
-      <UCard>
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-(--ui-text-muted)">
-              Total Revenue
-            </p>
-            <p class="text-2xl font-semibold text-(--ui-text) mt-1">
-              {{ formatCurrency(totalRevenue) }}
-            </p>
-          </div>
-          <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/20">
-            <UIcon
-              name="i-lucide-dollar-sign"
-              size="16"
-              class="text-blue-600 dark:text-blue-400"
-            />
-          </div>
-        </div>
-        <div class="flex items-center mt-4">
-          <UIcon
-            :name="revenueGrowth >= 0 ? 'i-lucide-trending-up' : 'i-lucide-trending-down'"
-            :class="[
-              'w-4 h-4 mr-2',
-              revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600',
-            ]"
-          />
-          <span
-            :class="[
-              'text-sm font-medium',
-              revenueGrowth >= 0 ? 'text-green-600' : 'text-red-600',
-            ]"
-          >          >
-            {{ Math.abs(revenueGrowth).toFixed(1) }}%
-          </span>
-          <span class="text-sm text-(--ui-text-muted) ml-2">
-            from last month
-          </span>
-        </div>
-      </UCard>
-
-      <!-- New Customers -->
-      <UCard>
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-(--ui-text-muted)">
-              New Customers
-            </p>
-            <p class="text-2xl font-semibold text-(--ui-text) mt-1">
-              {{ formatNumber(newCustomersThisMonth) }}
-            </p>
-          </div>
-          <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/20">
-            <UIcon
-              name="i-lucide-users"
-              size="20"
-              class="text-green-600 dark:text-green-400"
-            />
-          </div>
-        </div>
-        <div class="flex items-center mt-4">
-          <UIcon
-            :name="customersGrowth >= 0 ? 'i-lucide-trending-up' : 'i-lucide-trending-down'"
-            :class="[
-              'w-4 h-4 mr-2',
-              customersGrowth >= 0 ? 'text-green-600' : 'text-red-600',
-            ]"
-          />
-          <span
-            :class="[
-              'text-sm font-medium',
-              customersGrowth >= 0 ? 'text-green-600' : 'text-red-600',
-            ]"
-          >
-            {{ Math.abs(customersGrowth).toFixed(1) }}%
-          </span>
-          <span class="text-sm text-(--ui-text-muted) ml-2">
-            from last month
-          </span>
-        </div>
-      </UCard>
-
-      <!-- New Orders -->
-      <UCard>
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-(--ui-text-muted)">
-              New Orders
-            </p>
-            <p class="text-2xl font-semibold text-(--ui-text) mt-1">
-              {{ formatNumber(ordersData[ordersData.length - 1]?.orders || 0) }}
-            </p>
-          </div>
-          <div class="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/20">
-            <UIcon
-              name="i-lucide-shopping-cart"
-              size="20"
-              class="text-purple-600 dark:text-purple-400"
-            />
-          </div>
-        </div>
-        <div class="flex items-center mt-4">
-          <UIcon
-            :name="ordersGrowth >= 0 ? 'i-lucide-trending-up' : 'i-lucide-trending-down'"
-            :class="[
-              'w-4 h-4 mr-2',
-              ordersGrowth >= 0 ? 'text-green-600' : 'text-red-600',
-            ]"
-          />
-          <span
-            :class="[
-              'text-sm font-medium',
-              ordersGrowth >= 0 ? 'text-green-600' : 'text-red-600',
-            ]"
-          >
-            {{ Math.abs(ordersGrowth).toFixed(1) }}%
-          </span>
-          <span class="text-sm text-(--ui-text-muted) ml-2">
-            from last month
-          </span>
-        </div>
-      </UCard>
-
-      <!-- Total Customers -->
-      <UCard>
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-(--ui-text-muted)">
-              Total Customers
-            </p>
-            <p class="text-2xl font-semibold text-(--ui-text) mt-1">
-              {{ formatNumber(totalCustomers) }}
-            </p>
-          </div>
-          <div class="flex items-center justify-center w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20">
-            <UIcon
-              name="i-lucide-user-check"
-              size="20"
-              class="text-orange-600 dark:text-orange-400"
-            />
-          </div>
-        </div>
-        <div class="flex items-center mt-4">
-          <UIcon
-            name="i-lucide-trending-up"
-            class="w-4 h-4 mr-2 text-green-600"
-          />
-          <span class="text-sm font-medium text-green-600">
-            {{ formatNumber(totalOrders) }}
-          </span>
-          <span class="text-sm text-(--ui-text-muted) ml-2">
-            total orders
-          </span>
-        </div>
-      </UCard>
-    </div>
-
-    <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- Revenue Chart -->
       <UCard>
         <template #header>
           <div>
@@ -351,7 +159,6 @@ const customersGrowth = computed(() => {
         </template>
       </UCard>
 
-      <!-- Orders Chart -->
       <UCard>
         <template #header>
           <div>
@@ -396,7 +203,6 @@ const customersGrowth = computed(() => {
       </UCard>
     </div>
 
-    <!-- Customer Growth Chart - Full Width -->
     <UCard>
       <template #header>
         <div>
