@@ -6,6 +6,7 @@ export default defineAppConfig({
     collections: ['users', 'products'],
     config: {
       users: {
+        icon: 'i-lucide-user',
         visibleFields: ['name', 'email'],
         getValidationRules: () => {
           return {
