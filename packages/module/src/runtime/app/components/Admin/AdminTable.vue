@@ -22,6 +22,7 @@ type TableColumnDef<TData = unknown> = {
 type TableProps<T> = {
   visibleProps: string[]
   rows: T[]
+  table: string
   tableClass?: string
   total?: number
   pageCount?: number
@@ -96,7 +97,7 @@ watch(page, value => emit('update:page', value))
         @select="(row) => navigateTo({
           name: 'admin-collections-table-id',
           params: {
-            table: 'users',
+            table: props.table,
             id: row.original.id,
           },
         })"
