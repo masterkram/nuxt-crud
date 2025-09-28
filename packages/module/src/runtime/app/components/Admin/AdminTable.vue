@@ -94,13 +94,7 @@ watch(page, value => emit('update:page', value))
         :columns="columns"
         :data="props.rows"
         :class="props.tableClass"
-        @select="(row) => navigateTo({
-          name: 'admin-collections-table-id',
-          params: {
-            table: props.table,
-            id: row.original.id,
-          },
-        })"
+        @select="(row) => emit('on-click', row.original.id)"
       />
       <div class="flex justify-end mt-2">
         <UPagination
