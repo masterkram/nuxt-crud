@@ -22,6 +22,7 @@ type TableColumnDef<TData = unknown> = {
 type TableProps<T> = {
   visibleProps: string[]
   rows: T[]
+  table: string
   tableClass?: string
   total?: number
   pageCount?: number
@@ -93,13 +94,7 @@ watch(page, value => emit('update:page', value))
         :columns="columns"
         :data="props.rows"
         :class="props.tableClass"
-        @select="(row) => navigateTo({
-          name: 'admin-collections-table-id',
-          params: {
-            table: 'users',
-            id: row.original.id,
-          },
-        })"
+        @select="(row) => emit('on-click', row.original.id)"
       />
       <div class="flex justify-end mt-2">
         <UPagination
