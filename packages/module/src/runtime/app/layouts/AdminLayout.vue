@@ -1,11 +1,11 @@
 <template>
-  <div class="flex p-4">
+  <UDashboardGroup class="h-screen overflow-hidden">
     <AdminSidePanel />
-    <div
-      class="w-full max-w-7xl mx-auto space-y-8"
-    >
-      <AdminBreadcrumb />
-      <NuxtPage />
-    </div>
-  </div>
+    <UDashboardPanel class="overflow-y-auto">
+      <UDashboardNavbar title="Admin" />
+      <UContainer class="pt-6 pb-8">
+        <slot />
+      </UContainer>
+    </UDashboardPanel>
+  </UDashboardGroup>
 </template>
