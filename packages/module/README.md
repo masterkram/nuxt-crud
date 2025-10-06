@@ -19,6 +19,32 @@ Install the module to your Nuxt application with one command:
 npx nuxi module add nuxt-crud
 ```
 
+## Config 
+
+```ts
+//app.config.ts
+  crud: {
+    collections: ['users', 'products'],
+    config: {
+      users: {
+        icon: 'i-lucide-user',
+        visibleFields: ['name', 'email'],
+        getValidationRules: () => {
+          return {
+            email: z.email().min(1, 'Email is required'),
+          }
+        },
+      },
+      products: {
+        visibleFields: ['name'],
+      },
+    },
+  },
+  ui: {
+    ...nuxtUIConfig
+  }
+```
+
 ## Recommended Setup
 
 We highly recommend installing [`nuxt-crud-cli`](https://www.npmjs.com/package/nuxt-crud-cli) alongside this module. The CLI tool allows you to:
@@ -57,7 +83,7 @@ Navigate to `/admin` in your application to access the generated CRUD interface.
 
 ## Documentation
 
-For detailed configuration options, advanced usage, and customization guides, visit our [documentation](https://nuxt-crud.dev).
+For detailed configuration options, advanced usage, and customization guides, visit our [documentation](https://nuxt-crud-dennisadriaans.nuxt.dev/getting-started/module).
 
 ## Contributing
 

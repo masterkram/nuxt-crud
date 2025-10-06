@@ -76,6 +76,7 @@ const program = new Command();
 program
   .name('nuxt-crud')
   .description('CLI tool for generating CRUD backend files in Nuxt 3 projects')
+  .version(JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../package.json'), 'utf-8')).version)
 
 program
   .command('make:model')

@@ -360,16 +360,29 @@ export async function makeModel(
   await ensureDirectoryExists(responseDir);
 
   // --- Ensure global validation file in server/database/validation ---
-  const globalValidationDir = path.join(process.cwd(), "server", "database", "validation");
+  const globalValidationDir = path.join(
+    process.cwd(),
+    "server",
+    "database",
+    "validation"
+  );
   await ensureDirectoryExists(globalValidationDir);
   const globalValidationFile = path.join(globalValidationDir, "index.ts");
   const globalValidationContent = `import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 import * as tables from "../schema";
 import z from "zod/v4";
 
-export const getInsertSchema = (table: string) => {
+function getTableConfig(table: string) {
   const config = useAppConfig();
-  const { getValidationRules } = config.crud?.config?.[table];
+  const tableConfig = config.crud?.config?.[table];
+  if (!tableConfig || typeof tableConfig.getValidationRules !== "function") {
+    throw new Error(\`Validation rules not found for table: \${table}\`);
+  }
+  return tableConfig;
+}
+
+export const getInsertSchema = (table: string) => {
+  const { getValidationRules } = getTableConfig(table);
   return createInsertSchema(
     tables[table as keyof typeof tables],
     getValidationRules()
@@ -394,8 +407,7 @@ export const getInsertSchema = (table: string) => {
 };
 
 export const getUpdateSchema = (table: string) => {
-  const config = useAppConfig();
-  const { getValidationRules } = config.crud?.config?.[table];
+  const { getValidationRules } = getTableConfig(table);
   return createUpdateSchema(
     tables[table as keyof typeof tables],
     getValidationRules()
@@ -549,11 +561,12 @@ function generateSchemaFile(
   fields: FieldDefinition[]
 ): string {
   // Special case for User model
-  if (modelName === 'User') {
-    return `export const UserRoles = ['admin', 'user'] as const;
+  if (modelName === "User") {
+    return `import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+
+export const UserRoles = ['admin', 'user'] as const;
 export type UserRole = typeof UserRoles[number];
 
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable('users', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -564,6 +577,9 @@ export const users = sqliteTable('users', {
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),
 });
+
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
 `;
   }
 
