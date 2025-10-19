@@ -6,7 +6,8 @@ import {
   readValidatedBody,
   getValidatedQuery,
 } from 'h3'
-import { ZodError, type z, type ZodSchema } from 'zod'
+import type z from 'zod/v4'
+import { ZodError } from 'zod/v4'
 
 // Extend H3Event context to include our validated data placeholders
 // This part remains the same, providing a base for our more specific types.
@@ -26,13 +27,11 @@ interface ErrorResponse {
   data?: unknown
 }
 
-// --- NEW: Type Helpers for Inference ---
-
 /**
  * Infers the TypeScript type from a Zod schema. If the schema is undefined,
  * it resolves to `never`, preventing accidental access.
  */
-type InferValidatedType<T> = T extends ZodSchema ? z.infer<T> : never
+type InferValidatedType<T> = T extends z.ZodSchema ? z.infer<T> : never
 
 /**
  * Creates a strongly-typed H3Event for our handler, where the context
@@ -50,7 +49,6 @@ type ValidatedEvent<
   }
 }
 
-// --- CHANGED: Updated Options and Handler Signature ---
 interface MyEventHandlerOptions<
   TBody extends z.ZodSchema | undefined = undefined,
   TParams extends z.ZodSchema | undefined = undefined,
@@ -61,7 +59,6 @@ interface MyEventHandlerOptions<
    * The main handler function for the route. It receives an event with a typed context,
    * providing autocompletion and type safety for validated data.
    */
-  // CHANGED: The handler now receives our strongly-typed `ValidatedEvent`
   handler: (
     event: ValidatedEvent<TBody, TParams, TQuery>
   ) => unknown | Promise<unknown>
@@ -140,14 +137,14 @@ export function baseEventHandler<
       // Error handling remains the same. It is robust.
       if (error instanceof ZodError) {
         const zodErr = error as ZodError
-        const errorDetails = zodErr.errors
+        const errorDetails = zodErr.issues
           .map(e => `${e.path.join('.')}: ${e.message}`)
           .join(', ')
         const errorResponse: ErrorResponse = {
           statusCode: 400,
           statusMessage: 'Bad Request',
           message: 'Validation Error: ' + errorDetails,
-          data: zodErr.errors,
+          data: zodErr.issues,
         }
         throw createError(errorResponse)
       }
@@ -178,7 +175,7 @@ export function baseEventHandler<
           'Response validation failed for request:',
           event.path,
           '\nError:',
-          error instanceof ZodError ? zodErr.errors : error,
+          error instanceof ZodError ? zodErr.issues : error,
         )
         throw createError({
           statusCode: 500,
