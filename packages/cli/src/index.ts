@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import { makeModel } from './commands/makeModel.js';
 import { makeDatabase } from './commands/makeDatabase.js';
 import initCommand from './commands/init.js';
+import { pull } from './commands/pull.js';
 
 const program = new Command();
 
@@ -48,6 +49,19 @@ program
       console.log(chalk.green('✅ Project initialized: database and User model created.'));
     } catch (error) {
       console.error(chalk.red(`❌ Error initializing project: ${error instanceof Error ? error.message : 'Unknown error'}`));
+      process.exit(1);
+    }
+  });
+
+program
+  .command('pull')
+  .description('Introspect database and generate API routes for existing tables')
+  .action(async () => {
+    try {
+      await pull();
+      console.log(chalk.green('✅ API routes generated successfully!'));
+    } catch (error) {
+      console.error(chalk.red(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`));
       process.exit(1);
     }
   });
