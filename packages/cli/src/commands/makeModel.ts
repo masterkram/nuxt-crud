@@ -560,30 +560,10 @@ function generateSchemaFile(
   tableName: string,
   fields: FieldDefinition[]
 ): string {
-  // Special case for User model
-  if (modelName === "User") {
-    return `import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-
-export const UserRoles = ['admin', 'user'] as const;
-export type UserRole = typeof UserRoles[number];
-
-
-export const users = sqliteTable('users', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name'),
-  email: text('email'),
-  provider: text('provider'),
-  role: text('role', { enum: UserRoles }).notNull().default('user'),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull(),
-});
-
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-`;
-  }
-
-  const imports = ["sqliteTable", "text", "integer"];
+  /* Only uniques and actual drizzle field types */
+  const base = ['sqliteTable', 'integer'];
+  const fieldTypes = fields.map((field) => mapTypeToDrizzle(field.type));
+  const imports = [...base, ...new Set(fieldTypes)];
 
   const fieldDefinitions = fields
     .map((field) => {
