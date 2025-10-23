@@ -80,17 +80,12 @@ interface MyEventHandlerOptions<
  * A wrapper around `defineEventHandler` that provides built-in Zod validation for
  * request body, parameters, queries, and responses with full end-to-end type safety.
  */
-export function baseEventHandler<
-  TValidateBody extends z.ZodSchema | undefined = undefined,
-  TValidateParams extends z.ZodSchema | undefined = undefined,
-  TValidateQuery extends z.ZodSchema | undefined = undefined,
-  TValidateResponse extends z.ZodSchema | undefined = undefined,
->(
+export function baseEventHandler(
   options: MyEventHandlerOptions<
-    TValidateBody,
-    TValidateParams,
-    TValidateQuery,
-    TValidateResponse
+    z.ZodSchema | undefined,
+    z.ZodSchema | undefined,
+    z.ZodSchema | undefined,
+    z.ZodSchema | undefined
   >,
 ): EventHandler {
   const {
