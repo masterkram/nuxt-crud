@@ -372,20 +372,16 @@ export async function makeModel(
 import * as tables from "../schema";
 import z from "zod/v4";
 
-function getTableConfig(table: string) {
+export const getInsertSchema = (table: string) => {
   const config = useAppConfig();
   const tableConfig = config.crud?.config?.[table];
-  if (!tableConfig || typeof tableConfig.getValidationRules !== "function") {
-    throw new Error(\`Validation rules not found for table: \${table}\`);
-  }
-  return tableConfig;
-}
+  const dbTable = tables[table as keyof typeof tables];
 
-export const getInsertSchema = (table: string) => {
-  const { getValidationRules } = getTableConfig(table);
+  const rules = (tableConfig && tableConfig.getValidationRules()) || {};
+
   return createInsertSchema(
-    tables[table as keyof typeof tables],
-    getValidationRules()
+    dbTable,
+    rules
   ).extend({
     createdAt: z.preprocess(
       (arg) => {
@@ -407,10 +403,15 @@ export const getInsertSchema = (table: string) => {
 };
 
 export const getUpdateSchema = (table: string) => {
-  const { getValidationRules } = getTableConfig(table);
+  const config = useAppConfig();
+  const tableConfig = config.crud?.config?.[table];
+  const dbTable = tables[table as keyof typeof tables];
+
+  const rules =
+    (tableConfig && tableConfig.getValidationRules()) || {};
   return createUpdateSchema(
-    tables[table as keyof typeof tables],
-    getValidationRules()
+    dbTable,
+    rules
   ).omit({ id: true });
 };
 `;
