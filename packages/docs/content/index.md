@@ -36,7 +36,7 @@ Automatically generate a complete GUI for your Drizzle ORM models with built-in 
 
 ::u-page-section
 #title
-Everything You Need For Your Admin Panel Project.
+Everything You Need For Your CRUD Project.
 
 #features
   :::u-page-feature
