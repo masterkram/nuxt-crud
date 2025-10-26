@@ -1,6 +1,6 @@
 {
   "name": "nuxt-crud-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "CLI tool for generating CRUD backend files in Nuxt 3 projects",
   "main": "dist/index.js",
   "type": "module",

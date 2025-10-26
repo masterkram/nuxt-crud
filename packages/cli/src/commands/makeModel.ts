@@ -360,7 +360,12 @@ export async function makeModel(
   await ensureDirectoryExists(responseDir);
 
   // --- Ensure global validation file in server/database/validation ---
-  const globalValidationDir = path.join(process.cwd(), "server", "database", "validation");
+  const globalValidationDir = path.join(
+    process.cwd(),
+    "server",
+    "database",
+    "validation"
+  );
   await ensureDirectoryExists(globalValidationDir);
   const globalValidationFile = path.join(globalValidationDir, "index.ts");
   const globalValidationContent = `import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
@@ -369,10 +374,14 @@ import z from "zod/v4";
 
 export const getInsertSchema = (table: string) => {
   const config = useAppConfig();
-  const { getValidationRules } = config.crud?.config?.[table];
+  const tableConfig = config.crud?.config?.[table];
+  const dbTable = tables[table as keyof typeof tables];
+
+  const rules = (tableConfig && tableConfig.getValidationRules()) || {};
+
   return createInsertSchema(
-    tables[table as keyof typeof tables],
-    getValidationRules()
+    dbTable,
+    rules
   ).extend({
     createdAt: z.preprocess(
       (arg) => {
@@ -395,10 +404,14 @@ export const getInsertSchema = (table: string) => {
 
 export const getUpdateSchema = (table: string) => {
   const config = useAppConfig();
-  const { getValidationRules } = config.crud?.config?.[table];
+  const tableConfig = config.crud?.config?.[table];
+  const dbTable = tables[table as keyof typeof tables];
+
+  const rules =
+    (tableConfig && tableConfig.getValidationRules()) || {};
   return createUpdateSchema(
-    tables[table as keyof typeof tables],
-    getValidationRules()
+    dbTable,
+    rules
   ).omit({ id: true });
 };
 `;
@@ -548,26 +561,10 @@ function generateSchemaFile(
   tableName: string,
   fields: FieldDefinition[]
 ): string {
-  // Special case for User model
-  if (modelName === 'User') {
-    return `export const UserRoles = ['admin', 'user'] as const;
-export type UserRole = typeof UserRoles[number];
-
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-
-export const users = sqliteTable('users', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name'),
-  email: text('email'),
-  provider: text('provider'),
-  role: text('role', { enum: UserRoles }).notNull().default('user'),
-  createdAt: text('created_at').notNull(),
-  updatedAt: text('updated_at').notNull(),
-});
-`;
-  }
-
-  const imports = ["sqliteTable", "text", "integer"];
+  /* Only uniques and actual drizzle field types */
+  const base = ['sqliteTable', 'integer'];
+  const fieldTypes = fields.map((field) => mapTypeToDrizzle(field.type));
+  const imports = [...base, ...new Set(fieldTypes)];
 
   const fieldDefinitions = fields
     .map((field) => {

@@ -3,13 +3,80 @@ import chalk from 'chalk';
 import { makeModel } from './commands/makeModel.js';
 import { makeDatabase } from './commands/makeDatabase.js';
 import initCommand from './commands/init.js';
+import { exec } from 'child_process';
+import { readFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Helper to run shell commands
+const runCommand = (command: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(new Error(`Error executing command: ${command}\n${stderr}`));
+        return;
+      }
+      resolve(stdout.trim());
+    });
+  });
+};
+
+// Version comparison
+const isNewerVersion = (current: string, latest: string) => {
+    if (!current || !latest) return false;
+    const currentParts = current.split('.').map(Number);
+    const latestParts = latest.split('.').map(Number);
+
+    for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
+        const currentPart = currentParts[i] || 0;
+        const latestPart = latestParts[i] || 0;
+
+        if (latestPart > currentPart) return true;
+        if (latestPart < currentPart) return false;
+    }
+    return false;
+}
+
+const checkForUpdate = async () => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const packageJsonPath = path.resolve(__dirname, '../package.json');
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+    const currentVersion = packageJson.version;
+    const packageName = packageJson.name;
+
+    console.log(chalk.blue('Checking for updates...'));
+
+    const latestVersion = await runCommand(`npm view ${packageName} version`).catch(() => null);
+
+    if (!latestVersion) {
+        console.log(chalk.yellow('Could not check for updates (maybe you are offline).'));
+        return;
+    }
+
+    if (isNewerVersion(currentVersion, latestVersion)) {
+      console.log(chalk.yellow(`A new version (${latestVersion}) of ${packageName} is available.`));
+      console.log(chalk.blue('Installing the latest version...'));
+      
+      await runCommand(`pnpm add -g ${packageName}@latest`);
+      
+      console.log(chalk.green('✅ Update complete! Please run your command again.'));
+      process.exit(0);
+    } else {
+        console.log(chalk.green('You are on the latest version.'));
+    }
+  } catch (error) {
+    console.error(chalk.red(`❌ Error checking for updates: ${error instanceof Error ? error.message : 'Unknown error'}`));
+  }
+};
 
 const program = new Command();
 
 program
   .name('nuxt-crud')
   .description('CLI tool for generating CRUD backend files in Nuxt 3 projects')
-  .version('1.0.0');
+  .version(JSON.parse(readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../package.json'), 'utf-8')).version)
 
 program
   .command('make:model')
@@ -52,4 +119,9 @@ program
     }
   });
 
-program.parse();
+const main = async () => {
+    await checkForUpdate();
+    program.parse(process.argv);
+};
+
+main();
