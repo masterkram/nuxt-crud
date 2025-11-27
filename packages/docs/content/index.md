@@ -36,84 +36,72 @@ Automatically generate a complete GUI for your Drizzle ORM models with built-in 
 
 ::u-page-section
 #title
-Shipped with many features
+Everything You Need For Your CRUD Project.
 
 #features
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
-  target: _blank
-  to: https://nuxt.com
+  icon: i-tabler-database
   ---
   #title
-  Built with [Nuxt 4]{.text-primary}
+  Generated Drizzle Schema
   
   #description
-  Optimized by the most famous Vue framework. Docus gives you everything you need to build fast, performant, and SEO-friendly websites.
+  Generate your database schema from the command line.
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
-  target: _blank
-  to: https://ui.nuxt.com/
+  icon: i-tabler-layout-dashboard
   ---
   #title
-  Powered by [Nuxt UI Pro]{.text-primary}
+  Admin Panel Interface
   
   #description
-  Beautiful out of the box, minimal by design but highly customizable. Docus leverages Nuxt UI Pro to give you the best docs writing experience with zero boilerplate, just focus on your content.
+  Beautiful out of the box, minimal admin panel interface that is automatically generated for each of your database tables.
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
-  target: _blank
-  to: https://content.nuxt.com
+  icon: i-tabler-file-text
   ---
   #title
-  Enhanced Markdown syntax by [Nuxt Content]{.text-primary}
+  Zod validation
   
   #description
-  The only thing you need to take care about is writing your content. Write your pages in Markdown and extend with MDC syntax to embed Nuxt UI or custom Vue components. Structure, routing, and rendering are handled for you.
+  Generated zod schemas for your database tables can be easily extended with custom validation rules for each field.
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
-  target: _blank
-  to: https://nuxt.com/docs/guide/directory-structure/app-config
+  icon: i-tabler-settings
   ---
   #title
-  Customize with [Nuxt App Config]{.text-primary}
+  Customizable
   
   #description
-  Update colors, social links, header logos and component styles globally using the `app.config.ts`, no direct code modifications required.
+  Customize the admin panel interface and validation rules for each database table.
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
-  target: _blank
-  to: https://content.nuxt.com/studio
+  icon: i-tabler-brand-nuxt
   ---
   #title
-  Collaborate on [Nuxt Studio]{.text-primary}
+  Nuxt UI Dashboard
   
   #description
-  Write and manage your content visually, with zero Markdown knowledge required. Let your non technical colleagues collaborate on the documentation and integrate Vue components without code skills.
+  Our dashboard is built with the Nuxt UI component library for beautiful and responsive UI.
   :::
 
   :::u-page-feature
   ---
-  icon: i-simple-icons-nuxt
-  target: _blank
-  to: https://ui.nuxt.com/components/content-search
+  icon: i-tabler-search
   ---
   #title
-  Built-in navigation and [full-text search]{.text-primary}
+  Search, Pagination, Filters, and Sorting
   
   #description
-  Only focus on ordering your content, Docus handles the search modal and auto-generates the side navigation for you.
+  All the features you need to manage your data efficiently.
   :::
 ::
